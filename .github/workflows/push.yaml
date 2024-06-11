@@ -1,0 +1,13 @@
+name: default workflow
+
+on: push
+
+
+jobs:
+  
+  #
+  first:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "first step"
+      - run: echo "secret variable ${{ secrets.SOME_TEST_SECRET }}"
