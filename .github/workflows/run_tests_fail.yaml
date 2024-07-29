@@ -1,0 +1,19 @@
+name: Run Tests Fail
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+
+jobs:
+  #
+  first:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "first job"
+      - run: echo "secret variable ${{ secrets.SOME_TEST_SECRET }}"
+
+  second:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "second job"
+    - run: exit 1
