@@ -5,6 +5,6 @@ runs:
   steps:
     - name: checks
       shell: bash
-    - run: |
+      run: |
         tee needs.json <<< '${{ needs }}'
         cat needs.json
