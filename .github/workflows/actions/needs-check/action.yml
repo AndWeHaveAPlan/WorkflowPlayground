@@ -1,0 +1,10 @@
+name: 'build and push image'
+
+runs:
+  using: "composite"
+  steps:
+    - name: checks
+      shell: bash
+    - run: |
+        tee needs.json <<< '${{ needs }}'
+        cat needs.json

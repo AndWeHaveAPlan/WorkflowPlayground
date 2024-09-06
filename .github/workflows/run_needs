@@ -1,0 +1,41 @@
+name: Needs test
+
+on:
+  push:
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "success"
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "fail"
+          exit 1
+
+  job3:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - run: echo "skip"
+
+
+  final-job:
+    runs-on: ubuntu-latest
+    if: always() && !cancelled()
+    needs:
+      - job1
+      - job2
+      - job3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: build and push image
+        uses: ./.github/actions/needs-check
+        with:
+          image-name: "europe-docker.pkg.dev/parity-ci-2024/temp-images/substrate"
+          dockerfile: "docker/dockerfiles/substrate_injected.Dockerfile"
