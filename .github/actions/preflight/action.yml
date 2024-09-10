@@ -12,7 +12,9 @@ runs:
 
     - id: current-file
       shell: bash
-      run: echo "current-workflow-file=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
+      run: |
+        echo "current-workflow-file=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
+        echo "current-action-dir=$(echo ${{ github.action_path }}    | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
 
     - name: Get all test, doc and src files that have changed
       id: changed-files-yaml
@@ -25,7 +27,7 @@ runs:
             - '**.rs'
           current-workflow:
             - '${{ steps.current-file.outputs.current-workflow-file }}'
-            - '${{ github.action_path }}/*'
+            - '${{ steps.current-file.outputs.current-action-dir }}/*'
           test:
             - '**.md'
             - '**.rs'
@@ -33,6 +35,6 @@ runs:
     - name: log
       shell: bash
       run: |
-        echo "action dir: ${{ github.action_path }}"
+        echo "action dir: ${{ steps.current-file.outputs.current-action-dir }}"
         echo "wf file: ${{ steps.current-file.outputs.current-workflow-file }}"
         echo "Modified: ${{ steps.changed-files-yaml.outputs.modified_keys }}"
