@@ -1,0 +1,37 @@
+name: Preflight
+
+inputs:
+  jobs-json:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+
+    - uses: actions/checkout@v4
+
+    - id: current-file
+      run: |
+        export FILE_NAME=${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p"
+        echo $FILE_NAME
+        echo "current-workflow-file=$FILE_NAME"
+        >> $GITHUB_OUTPUT
+
+    - name: Get all test, doc and src files that have changed
+      id: changed-files-yaml
+      uses: tj-actions/changed-files@v45
+      with:
+        files_yaml: |
+          doc:
+            - '**.md'
+          rust:
+            - '**.rs'
+          current-workflow:
+            - ${{ steps.current-file.outputs.current-workflow-file }}
+          test:
+            - '**.md'
+            - '**.rs'
+
+    - name: log
+      run: |
+        echo ${{ steps.changed-files-yaml.outputs.modified_keys }}
