@@ -20,7 +20,6 @@ runs:
 
     - name: Get all test, doc and src files that have changed
       id: changed-files-yaml
-      shell: bash
       uses: tj-actions/changed-files@v45
       with:
         files_yaml: |
