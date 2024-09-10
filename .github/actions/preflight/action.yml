@@ -25,6 +25,7 @@ runs:
             - '**.rs'
           current-workflow:
             - '${{ steps.current-file.outputs.current-workflow-file }}'
+            - '${{ github.action_path }}/*'
           test:
             - '**.md'
             - '**.rs'
@@ -32,5 +33,6 @@ runs:
     - name: log
       shell: bash
       run: |
+        echo "action dir: ${{ github.action_path }}"
         echo "wf file: ${{ steps.current-file.outputs.current-workflow-file }}"
         echo "Modified: ${{ steps.changed-files-yaml.outputs.modified_keys }}"
