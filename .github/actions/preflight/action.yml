@@ -11,6 +11,7 @@ runs:
     - uses: actions/checkout@v4
 
     - id: current-file
+      shell: bash
       run: |
         export FILE_NAME=${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p"
         echo $FILE_NAME
