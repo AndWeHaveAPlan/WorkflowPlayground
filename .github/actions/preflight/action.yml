@@ -1,8 +1,12 @@
 name: Preflight
 
-inputs:
-  jobs-json:
-    required: true
+outputs:
+  changes:
+    description: "Random number"
+    value:
+      rust: "a"
+      current-workflow: "b"
+      #${{ steps.random-number-generator.outputs.random-number }}
 
 runs:
   using: "composite"
@@ -14,24 +18,21 @@ runs:
       shell: bash
       run: |
         echo "current-workflow-file=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
-        echo "current-action-dir=$(echo ${{ github.action_path }}    | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
+        echo "current-action-dir=$(echo ${{ github.action_path }} | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
 
     - name: Get all test, doc and src files that have changed
       id: changed-files-yaml
       uses: tj-actions/changed-files@v45
       with:
         files_yaml: |
-          doc:
-            - '**.md'
           rust:
             - '**/*'
             - '!.github/**/*'
+            - '!prdoc/**/*'
+            - '!docs/**/*'
           current-workflow:
             - '${{ steps.current-file.outputs.current-workflow-file }}'
             - '${{ steps.current-file.outputs.current-action-dir }}/*'
-          test:
-            - '**.md'
-            - '**.rs'
 
     - name: log
       shell: bash
