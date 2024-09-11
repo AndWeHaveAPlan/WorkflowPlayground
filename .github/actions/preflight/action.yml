@@ -38,4 +38,6 @@ runs:
       run: |
         echo "action dir: ${{ steps.current-file.outputs.currentActionDir }}"
         echo "wf file: ${{ steps.current-file.outputs.currentWorkflowFile }}"
-        echo "Modified: ${{ steps.changed-files-yaml.outputs.modified_keys }}"
+        echo "github.ref: ${{ github.ref }}"
+        echo "github.ref_name: ${{ github.ref_name }}"
+        echo "github.sha: ${{ github.sha }}"
