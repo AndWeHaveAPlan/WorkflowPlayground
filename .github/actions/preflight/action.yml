@@ -1,12 +1,11 @@
 name: Preflight
 
 outputs:
-  changes:
-    description: "Random number"
-    value:
-      rust: "a"
-      current-workflow: "b"
-      #${{ steps.random-number-generator.outputs.random-number }}
+  changes_rust:
+    value: ${{ steps.changed-files-yaml.outputs.rust_any_changes || steps.changed-files-yaml.outputs.currentWorkflow_any_changes }}
+
+  changes_currentWorkflow:
+    value: ${{ steps.changed-files-yaml.outputs.currentWorkflow_any_changes }}
 
 runs:
   using: "composite"
@@ -17,8 +16,8 @@ runs:
     - id: current-file
       shell: bash
       run: |
-        echo "current-workflow-file=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
-        echo "current-action-dir=$(echo ${{ github.action_path }} | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
+        echo "currentWorkflowFile=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
+        echo "currentActionDir=$(echo ${{ github.action_path }} | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
 
     - name: Get all test, doc and src files that have changed
       id: changed-files-yaml
@@ -30,13 +29,13 @@ runs:
             - '!.github/**/*'
             - '!prdoc/**/*'
             - '!docs/**/*'
-          current-workflow:
-            - '${{ steps.current-file.outputs.current-workflow-file }}'
-            - '${{ steps.current-file.outputs.current-action-dir }}/*'
+          currentWorkflow:
+            - '${{ steps.current-file.outputs.currentWorkflowFile }}'
+            - '${{ steps.current-file.outputs.currentActionDir }}/*'
 
     - name: log
       shell: bash
       run: |
-        echo "action dir: ${{ steps.current-file.outputs.current-action-dir }}"
-        echo "wf file: ${{ steps.current-file.outputs.current-workflow-file }}"
+        echo "action dir: ${{ steps.current-file.outputs.currentActionDir }}"
+        echo "wf file: ${{ steps.current-file.outputs.currentWorkflowFile }}"
         echo "Modified: ${{ steps.changed-files-yaml.outputs.modified_keys }}"
