@@ -19,5 +19,5 @@ jobs:
 
       - name: preflight log
         run: |
-          echo "rust ${{ steps.preflight.outputs.changes_rust }}"
-          echo "current-workflow ${{ steps.preflight.outputs.changes_currentWorkflow }}"
+          echo "rust: ${{ steps.preflight.outputs.changes_rust }}"
+          echo "current-workflow: ${{ steps.preflight.outputs.changes_currentWorkflow }}"

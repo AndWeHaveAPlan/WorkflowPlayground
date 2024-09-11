@@ -2,10 +2,10 @@ name: Preflight
 
 outputs:
   changes_rust:
-    value: ${{ steps.changed-files-yaml.outputs.rust_any_changes || steps.changed-files-yaml.outputs.currentWorkflow_any_changes }}
+    value: ${{ steps.changed-files-yaml.outputs.rust_any_changed || steps.changed-files-yaml.outputs.currentWorkflow_any_changed }}
 
   changes_currentWorkflow:
-    value: ${{ steps.changed-files-yaml.outputs.currentWorkflow_any_changes }}
+    value: ${{ steps.changed-files-yaml.outputs.currentWorkflow_any_changed }}
 
 runs:
   using: "composite"
