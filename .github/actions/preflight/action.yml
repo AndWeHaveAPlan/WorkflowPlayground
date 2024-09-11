@@ -24,7 +24,8 @@ runs:
           doc:
             - '**.md'
           rust:
-            - '**.rs'
+            - '**/*'
+            - '!.github/**/*'
           current-workflow:
             - '${{ steps.current-file.outputs.current-workflow-file }}'
             - '${{ steps.current-file.outputs.current-action-dir }}/*'
