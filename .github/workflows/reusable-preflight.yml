@@ -106,4 +106,4 @@ jobs:
         run: |
           echo "action dir: ${{ steps.current_file.outputs.currentActionDir }}"
           echo "wf file: ${{ steps.current_file.outputs.currentWorkflowFile }}"
-          echo "Modified: ${{ steps.current_file.outputs.modified_keys }}"
+          echo "Modified: ${{ steps.set_changes.outputs.modified_keys }}"
