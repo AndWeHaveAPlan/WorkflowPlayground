@@ -64,7 +64,7 @@ jobs:
               - '!docs/**/*'
             currentWorkflow:
               - '${{ steps.current_file.outputs.currentWorkflowFile }}'
-              - '${{ steps.current_file.outputs.currentActionDir }}/*'
+              - './.github/workflows/reusable-preflight.yml'
 
       #
       # Set image
