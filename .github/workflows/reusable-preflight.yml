@@ -31,27 +31,14 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      changes_rust:
-        value: ${{ steps.set_changes.outputs.rust_any_changed || steps.set_changes.outputs.currentWorkflow_any_changed }}
-      changes_currentWorkflow:
-        value: ${{ steps.set_changes.outputs.currentWorkflow_any_changed }}
+      changes_rust: ${{ steps.set_changes.outputs.rust_any_changed || steps.set_changes.outputs.currentWorkflow_any_changed }}
+      changes_currentWorkflow: ${{ steps.set_changes.outputs.currentWorkflow_any_changed }}
 
-      IMAGE:
-        value: ${{ steps.set_image.outputs.IMAGE }}
-        description: "CI image"
-      RUNNER:
-        value: ${{ steps.set_runner.outputs.RUNNER }}
-        description: |
-          Runner name.
-          By default we use spot machines that can be terminated at any time.
-          Merge queues use persistent runners to avoid kicking off from queue when the runner is terminated.
+      IMAGE: ${{ steps.set_image.outputs.IMAGE }}
+      RUNNER: ${{ steps.set_runner.outputs.RUNNER }}
 
-      SOURCE_REF_NAME:
-        value: ${{ steps.set_vars.outputs.SOURCE_REF_NAME }}
-        description: "Name of the current branch for `push` or source branch for `pull_request`"
-      COMMIT_SHA:
-        value: ${{ steps.set_vars.outputs.COMMIT_SHA }}
-        description: "Sha of the current commit for `push` or head of the source branch for `pull_request`"
+      SOURCE_REF_NAME: ${{ steps.set_vars.outputs.SOURCE_REF_NAME }}
+      COMMIT_SHA: ${{ steps.set_vars.outputs.COMMIT_SHA }}
 
 
     steps:
