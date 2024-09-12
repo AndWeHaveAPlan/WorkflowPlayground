@@ -28,8 +28,6 @@ on:
 jobs:
   changes:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
     outputs:
       changes_rust: ${{ steps.set_changes.outputs.rust_any_changed || steps.set_changes.outputs.currentWorkflow_any_changed }}
       changes_currentWorkflow: ${{ steps.set_changes.outputs.currentWorkflow_any_changed }}
