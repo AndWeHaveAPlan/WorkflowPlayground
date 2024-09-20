@@ -4,17 +4,16 @@ on:
   push:
     branches:
       - 'main'
-    tags:
-      - "v[0-9]+.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9]+"
+    #tags:
+    #  - "v[0-9]+.[0-9]+.[0-9]+"
+    #  - "v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9]+"
 jobs:
 
   lint:
     runs-on: ubuntu-latest ##
 
     steps:
-      - name: log
+      - name: Log
         run: |
           echo ${{ github.ref }}
           echo ${{ github.ref_name }}
@@ -22,3 +21,35 @@ jobs:
       #  run: cargo +nightly fmt --all -- --check
       #- name: clippy
       #  run: cargo clippy --all --verbose
+
+      - name: Versions
+        id: versions
+        run: |
+          export CURRENT_TAG=$(git describe --tags --abbrev=0)
+          export PKG_VER=v$(cat Cargo.toml | grep -A 5 package] | grep version | cut -d '=' -f 2 | tr -d '"' | tr -d " ")
+          echo "Current tag $CURRENT_TAG"
+          echo "Package version $PKG_VER"
+          echo "PKG_VER=$PKG_VER" >> $GITHUB_OUTPUT
+
+      - name: Create/update tag
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/v${{ steps.versions.outputs.PKG_VER }}',
+              sha: context.sha
+            }).catch(err => {
+              if (err.status !== 422) throw err;
+              console.log("Tag already exists, updating")
+              github.rest.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'tags/v${{ steps.versions.outputs.PKG_VER }}',
+                sha: context.sha
+              });
+              return "update";
+            });
+            return "new"
