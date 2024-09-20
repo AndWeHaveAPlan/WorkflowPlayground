@@ -32,7 +32,6 @@ jobs:
           - echo "PKG_VER=$PKG_VER" >> $GITHUB_OUTPUT
 
       - name: Create/update tag
-        needs: [versions]
         uses: actions/github-script@v7
         with:
           result-encoding: string
