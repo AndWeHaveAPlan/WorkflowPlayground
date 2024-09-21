@@ -62,4 +62,4 @@ jobs:
 
       - name: Some job
         run: |
-          echo "tag result: ${{ steps.tag.outputs.result }}"
+          echo "tag result:  ${{ steps.tag.outputs.result }}"
