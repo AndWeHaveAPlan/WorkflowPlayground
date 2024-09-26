@@ -10,9 +10,7 @@ on:
 jobs:
 
   lint:
-    runs-on: ubuntu-latest ##
-    permissions:
-      contents: write
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
@@ -27,6 +25,15 @@ jobs:
       #- name: clippy
       #  run: cargo clippy --all --verbose
 
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [lint]
+    outputs:
+      TAG: ${{ steps.versions.outputs.TAG }}
+      PKG_VER: ${{ steps.versions.outputs.PKG_VER }}
+    steps:
       - name: Versions
         id: versions
         run: |
@@ -34,10 +41,24 @@ jobs:
           export PKG_VER=v$(cat Cargo.toml | grep -A 5 package] | grep version | cut -d '=' -f 2 | tr -d '"' | tr -d " ")
           echo "Current tag $CURRENT_TAG"
           echo "Package version $PKG_VER"
+          #
           echo "PKG_VER=$PKG_VER" >> $GITHUB_OUTPUT
+          if [ $CURRENT_TAG == $PKG_VER  ];
+            then
+              echo "Tag is up to date. Nothing to do.";
+              export TAG=old;
+            else
+              echo "Tag was updated.";
+              git tag -a $PKG_VER -m "new tag";
+              git log --tags --simplify-by-decoration --pretty="format:%ci %d";
+              git push origin --tags;
+              export TAG=new;
+            fi
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
 
       - name: Create/update tag
         id: tag
+        if: ${{ steps.versions.outputs.TAG == 'new' }}
         uses: actions/github-script@v7
         with:
           result-encoding: string
@@ -58,10 +79,14 @@ jobs:
                 ref: 'tags/${{ steps.versions.outputs.PKG_VER }}',
                 sha: context.sha
               });
-              return "update";
             }
-            return "new"
 
+  publish:
+    runs-on: ubuntu-latest
+    needs: [tag]
+    if: ${{ needs.tag.outputs.TAG == 'new' }}
+    steps:
       - name: Some job
         run: |
-          echo "tag result:  ${{ steps.tag.outputs.result }}"
+          echo "tag result:   ${{ needs.tag.outputs.TAG }}"
+          echo "pkg version:  ${{ needs.tag.outputs.PKG_VER }}"
