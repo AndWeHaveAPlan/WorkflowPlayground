@@ -1,4 +1,4 @@
-name: Tests fail
+name: Tests success
 on:
     workflow_run:
       workflows: [Run Tests Success]
