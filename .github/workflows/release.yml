@@ -98,6 +98,8 @@ jobs:
               repo: context.repo.repo
             });
 
+            console.dir(releases)
+
             releases.sort((a, b) => {
               return (a.date < b.date) ? 1 : ((a.date > b.date) ? -1 : 0);
             });
