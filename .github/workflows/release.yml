@@ -102,7 +102,7 @@ jobs:
               return (a.date < b.date) ? 1 : ((a.date > b.date) ? -1 : 0);
             });
 
-            var llvmLatestRelease = release.find(release => {
+            var llvmLatestRelease = releases.find(release => {
               release.startsWith('other')
             });
 
