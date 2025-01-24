@@ -94,8 +94,8 @@ jobs:
           result-encoding: string
           script: |
             let releases = await github.rest.repos.listReleases({
-              owner,
-              repo
+              context.repo.owner,
+              context.repo.repo
             });
 
             releases.sort((a, b) => {
