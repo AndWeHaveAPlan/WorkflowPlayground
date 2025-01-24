@@ -84,12 +84,49 @@ jobs:
               });
             }
 
-  publish:
+  build:
     runs-on: ubuntu-latest
     needs: [tag]
-    if: ${{ needs.tag.outputs.TAG == 'new' }}
     steps:
-      - name: Some job
+      - name: search release
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let releases = await github.rest.repos.listReleases({
+              owner,
+              repo
+            });
+
+            releases.sort((a, b) => {
+              return (a.date < b.date) ? 1 : ((a.date > b.date) ? -1 : 0);
+            });
+
+            var llvmLatestRelease = release.find(release => {
+              release.startsWith('other')
+            });
+
+            console.dir(llvmLatestRelease)
+
+
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build, tag]
+    if: ${{ needs.tag.outputs.TAG == 'new' && false }}
+    steps:
+      - name: Create release
+        id: create_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ needs.tag.outputs.TAG }}
+          release_name: Release ${{ needs.tag.outputs.PKG_VER }}
+          draft: true
+          prerelease: false
+
+      - name: Log
         run: |
           echo "tag result:   ${{ needs.tag.outputs.TAG }}"
           echo "pkg version:  ${{ needs.tag.outputs.PKG_VER }}"
