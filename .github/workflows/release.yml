@@ -108,7 +108,7 @@ jobs:
             });
 
             var llvmLatestRelease = releases.find(release => {
-              release.startsWith('other')
+              release.published_at.startsWith('other')
             });
 
             console.dir(llvmLatestRelease)
