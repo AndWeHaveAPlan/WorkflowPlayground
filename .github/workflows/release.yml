@@ -93,10 +93,13 @@ jobs:
         with:
           result-encoding: string
           script: |
-            let releases = await github.rest.repos.listReleases({
+            let releasesResponse = await github.rest.repos.listReleases({
               owner: context.repo.owner,
               repo: context.repo.repo
             });
+
+            // TODO: check
+            let releases = releasesResponse.data
 
             console.dir(releases)
 
