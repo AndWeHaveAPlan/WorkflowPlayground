@@ -104,11 +104,11 @@ jobs:
             console.dir(releases)
 
             releases.sort((a, b) => {
-              return (a.date < b.date) ? 1 : ((a.date > b.date) ? -1 : 0);
+              return (a.published_at < b.published_at) ? 1 : ((a.published_at > b.published_at) ? -1 : 0);
             });
 
             var llvmLatestRelease = releases.find(release => {
-              release.published_at.startsWith('other')
+              release.tag_name.startsWith('other')
             });
 
             console.dir(llvmLatestRelease)
