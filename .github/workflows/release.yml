@@ -118,7 +118,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: [tag]
-    if: ${{ needs.tag.outputs.TAG == 'new' && false }}
+    if: ${{ needs.tag.outputs.TAG == 'new' }}
     steps:
       - name: Create release
         id: create_release
