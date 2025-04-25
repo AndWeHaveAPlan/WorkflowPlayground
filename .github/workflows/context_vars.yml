@@ -16,3 +16,7 @@ jobs:
       - name: Or
         run: |
           echo ${{ github.event.pull_request.number || 'main' }}
+
+      - name: Secrets
+        run: |
+          echo SOME_VAR ${{ secrets.SOME_VAR }}
