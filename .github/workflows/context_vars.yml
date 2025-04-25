@@ -1,0 +1,18 @@
+name: Context vars
+run-name: Context vars ${{ github.ref_name }}
+on:
+  push:
+    branches:
+      - 'main'
+    #tags:
+    #  - "v[0-9]+.[0-9]+.[0-9]+"
+    #  - "v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9]+"
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Or
+        run: |
+          echo ${{ github.event.pull_request.number || 'main' }}
