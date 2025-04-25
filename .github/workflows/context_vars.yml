@@ -18,5 +18,6 @@ jobs:
           echo ${{ github.event.pull_request.number || 'main' }}
 
       - name: Secrets
+        if: ${{ secrets.SOME_VAR == '' }}
         run: |
           echo SOME_VAR ${{ secrets.SOME_VAR }}
