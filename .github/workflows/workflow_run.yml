@@ -1,0 +1,11 @@
+name: Workflow_run On Run
+on:
+    workflow_run:
+      workflows: [Workflow_run On PR]
+      types: [completed]
+
+jobs:
+  someCheck:
+    runs-on: ubuntu-latest
+    steps:
+        - run: exit 1
