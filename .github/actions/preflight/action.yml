@@ -1,0 +1,43 @@
+name: Preflight
+
+outputs:
+  changes_rust:
+    value: ${{ steps.changed-files-yaml.outputs.rust_any_changed || steps.changed-files-yaml.outputs.currentWorkflow_any_changed }}
+
+  changes_currentWorkflow:
+    value: ${{ steps.changed-files-yaml.outputs.currentWorkflow_any_changed }}
+
+runs:
+  using: "composite"
+  steps:
+
+    - uses: actions/checkout@v4
+
+    - id: current-file
+      shell: bash
+      run: |
+        echo "currentWorkflowFile=$(echo ${{ github.workflow_ref }} | sed -nE "s/.*(\.github\/workflows\/[a-zA-Z0-9_-]*\.y[a]?ml)@refs.*/\1/p")" >> $GITHUB_OUTPUT
+        echo "currentActionDir=$(echo ${{ github.action_path }} | sed -nE "s/.*(\.github\/actions\/[a-zA-Z0-9_-]*)/\1/p")" >> $GITHUB_OUTPUT
+
+    - name: Get all test, doc and src files that have changed
+      id: changed-files-yaml
+      uses: tj-actions/changed-files@v45
+      with:
+        files_yaml: |
+          rust:
+            - '**/*'
+            - '!.github/**/*'
+            - '!prdoc/**/*'
+            - '!docs/**/*'
+          currentWorkflow:
+            - '${{ steps.current-file.outputs.currentWorkflowFile }}'
+            - '${{ steps.current-file.outputs.currentActionDir }}/*'
+
+    - name: log
+      shell: bash
+      run: |
+        echo "action dir: ${{ steps.current-file.outputs.currentActionDir }}"
+        echo "wf file: ${{ steps.current-file.outputs.currentWorkflowFile }}"
+        echo "github.ref: ${{ github.ref }}"
+        echo "github.ref_name: ${{ github.ref_name }}"
+        echo "github.sha: ${{ github.sha }}"

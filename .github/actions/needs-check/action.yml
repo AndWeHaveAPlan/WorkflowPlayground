@@ -1,5 +1,9 @@
 name: 'build and push image'
 
+inputs:
+  jobs-json:
+    required: true
+
 runs:
   using: "composite"
   steps:

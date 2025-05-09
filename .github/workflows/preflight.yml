@@ -1,0 +1,28 @@
+name: Preflight
+
+on:
+  push:
+  pull_request:
+  merge_group:
+
+jobs:
+
+  reusable-job:
+    uses: ./.github/workflows/reusable-preflight.yml
+
+
+  final-job:
+    runs-on: ubuntu-latest
+    if: always() && !cancelled()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: preflight custom action
+        id: preflight
+        uses: ./.github/actions/preflight
+
+      - name: preflight log
+        run: |
+          echo "rust: ${{ steps.preflight.outputs.changes_rust }}"
+          echo "current-workflow: ${{ steps.preflight.outputs.changes_currentWorkflow }}"
